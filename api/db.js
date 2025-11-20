@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 const MONGODB_URI = process.env.MONGODB_URI
 
 if (!MONGODB_URI) {
+  console.error('MONGODB_URI is not defined')
   throw new Error('Please define the MONGODB_URI environment variable')
 }
 
@@ -20,10 +21,16 @@ async function connectDB() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
     }
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      console.log('✅ MongoDB connected')
       return mongoose
+    }).catch((error) => {
+      console.error('❌ MongoDB connection error:', error)
+      cached.promise = null
+      throw error
     })
   }
 
@@ -31,6 +38,7 @@ async function connectDB() {
     cached.conn = await cached.promise
   } catch (e) {
     cached.promise = null
+    console.error('❌ Failed to connect to MongoDB:', e.message)
     throw e
   }
 

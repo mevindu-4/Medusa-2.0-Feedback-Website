@@ -27,11 +27,12 @@ export default async function handler(req, res) {
       .sort({ createdAt: -1 }) // Newest first
       .limit(100) // Limit to prevent overwhelming response
 
-    res.json(feedbacks)
+    return res.status(200).json(feedbacks)
   } catch (error) {
     console.error('Error fetching feedbacks:', error)
-    res.status(500).json({
-      message: 'Server error while fetching feedbacks'
+    return res.status(500).json({
+      message: 'Server error while fetching feedbacks',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     })
   }
 }
