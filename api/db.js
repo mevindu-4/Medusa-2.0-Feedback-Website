@@ -8,6 +8,25 @@ if (!MONGODB_URI) {
   throw new Error('MONGODB_URI environment variable is not set. Please configure it in your Vercel environment variables.')
 }
 
+// Ensure database name is in the connection string
+function ensureDatabaseInUri(uri) {
+  // Check if URI already has a database name (pattern: /database-name? or /database-name at end)
+  const dbNamePattern = /\/([^/?]+)(\?|$)/
+  if (dbNamePattern.test(uri)) {
+    // Replace existing database name with our target database
+    return uri.replace(/\/[^/?]+(\?|$)/, `/${DB_NAME}$1`)
+  }
+  
+  // If no database in URI, add it before query parameters
+  if (uri.includes('?')) {
+    return uri.replace('?', `/${DB_NAME}?`)
+  } else {
+    return `${uri}/${DB_NAME}`
+  }
+}
+
+const connectionUri = ensureDatabaseInUri(MONGODB_URI)
+
 let cached = global.mongoose
 
 if (!cached) {
@@ -23,10 +42,10 @@ async function connectDB() {
     const opts = {
       bufferCommands: false,
       serverSelectionTimeoutMS: 10000,
-      dbName: DB_NAME, // Explicitly set database name
+      dbName: DB_NAME, // Also set as option for redundancy
     }
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(connectionUri, opts).then((mongoose) => {
       console.log(`✅ MongoDB connected to database: ${DB_NAME}`)
       return mongoose
     }).catch((error) => {
