@@ -29,9 +29,18 @@ export default async function handler(req, res) {
 
     return res.status(200).json(feedbacks)
   } catch (error) {
-    console.error('Error fetching feedbacks:', error)
+    console.error('❌ Error fetching feedbacks:', error)
+    
+    // Provide more helpful error messages
+    let errorMessage = 'Server error while fetching feedbacks'
+    if (error.message.includes('MONGODB_URI')) {
+      errorMessage = 'Database configuration error. Please check environment variables.'
+    } else if (error.message.includes('connection') || error.message.includes('timeout')) {
+      errorMessage = 'Database connection failed. Please check your MongoDB connection string.'
+    }
+    
     return res.status(500).json({
-      message: 'Server error while fetching feedbacks',
+      message: errorMessage,
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
     })
   }
