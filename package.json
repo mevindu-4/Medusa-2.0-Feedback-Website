@@ -1,6 +1,7 @@
 {
   "name": "medusa-2.0-feedback-system",
   "version": "1.0.0",
+  "type": "module",
   "description": "Feedback collection platform for Medusa 2.0 cybersecurity event",
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
