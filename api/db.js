@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const MONGODB_URI = process.env.MONGODB_URI
+const DB_NAME = 'medusa-feedback'
 
 if (!MONGODB_URI) {
   console.error('❌ MONGODB_URI is not defined')
@@ -22,10 +23,11 @@ async function connectDB() {
     const opts = {
       bufferCommands: false,
       serverSelectionTimeoutMS: 10000,
+      dbName: DB_NAME, // Explicitly set database name
     }
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log('✅ MongoDB connected')
+      console.log(`✅ MongoDB connected to database: ${DB_NAME}`)
       return mongoose
     }).catch((error) => {
       console.error('❌ MongoDB connection error:', error)
