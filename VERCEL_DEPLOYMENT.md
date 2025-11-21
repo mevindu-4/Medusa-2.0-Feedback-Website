@@ -25,11 +25,10 @@ Your code is already on GitHub at: `https://github.com/mevindu-4/Medusa-2.0-Feed
 5. **Add Environment Variables**
    Click "Environment Variables" and add:
    - **Name:** `MONGODB_URI`
-   - **Value:** Your MongoDB Atlas connection string
-     ```
-     mongodb+srv://medusa_user:awJ7bDTgLLmIP4FD@cluster0.mkfvlod.mongodb.net/?appName=Cluster0
-     ```
+   - **Value:** Your MongoDB Atlas connection string (e.g., `mongodb+srv://username:password@cluster.mongodb.net/?appName=Cluster0`)
    - **Environment:** Production, Preview, Development (select all)
+   
+   ⚠️ **Security Note:** Never commit your actual MongoDB URI to version control. Always use environment variables.
 
 6. **Deploy**
    - Click "Deploy"
