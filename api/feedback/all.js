@@ -33,15 +33,22 @@ export default async function handler(req, res) {
     
     // Provide more helpful error messages
     let errorMessage = 'Server error while fetching feedbacks'
+    let errorDetails = null
+    
     if (error.message.includes('MONGODB_URI')) {
       errorMessage = 'Database configuration error. Please check environment variables.'
+      errorDetails = 'MONGODB_URI environment variable is not set in Vercel.'
     } else if (error.message.includes('connection') || error.message.includes('timeout')) {
       errorMessage = 'Database connection failed. Please check your MongoDB connection string.'
+      errorDetails = error.message
+    } else {
+      errorDetails = error.message
     }
     
     return res.status(500).json({
       message: errorMessage,
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      error: errorDetails,
+      hasMongoUri: !!process.env.MONGODB_URI
     })
   }
 }
