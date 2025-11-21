@@ -1,5 +1,6 @@
 import connectDB from '../db.js'
 import Feedback from '../models/Feedback.js'
+import mongoose from 'mongoose'
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -26,6 +27,16 @@ export default async function handler(req, res) {
     const feedbacks = await Feedback.find()
       .sort({ createdAt: -1 }) // Newest first
       .limit(100) // Limit to prevent overwhelming response
+
+    // Return feedbacks with diagnostic info in development
+    if (process.env.NODE_ENV === 'development') {
+      return res.status(200).json({
+        feedbacks,
+        count: feedbacks.length,
+        database: mongoose.connection.db?.databaseName || 'unknown',
+        connectionState: mongoose.connection.readyState
+      })
+    }
 
     return res.status(200).json(feedbacks)
   } catch (error) {
