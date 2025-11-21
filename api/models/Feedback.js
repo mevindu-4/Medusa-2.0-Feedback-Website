@@ -27,7 +27,8 @@ const feedbackSchema = new mongoose.Schema({
     default: Date.now
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  collection: 'feedbacks' // Explicitly set collection name
 })
 
 const Feedback = mongoose.models.Feedback || mongoose.model('Feedback', feedbackSchema)

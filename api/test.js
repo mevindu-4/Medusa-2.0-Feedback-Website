@@ -27,12 +27,32 @@ export default async function handler(req, res) {
         databaseName: mongoose.connection.db?.databaseName || 'unknown'
       }
       
-      // Try to count feedbacks
+      // Try to count feedbacks and list collections
       try {
+        const db = mongoose.connection.db
+        const collections = await db?.listCollections().toArray()
+        const collectionNames = collections?.map(c => c.name) || []
+        
         const count = await Feedback.countDocuments()
+        
+        // Try to get count from all possible collection names
+        const allCounts = {}
+        for (const collName of ['feedbacks', 'feedback']) {
+          try {
+            const coll = db.collection(collName)
+            const docCount = await coll.countDocuments()
+            allCounts[collName] = docCount
+          } catch (e) {
+            allCounts[collName] = 'error'
+          }
+        }
+        
         diagnostics.database = {
           feedbackCount: count,
-          status: 'accessible'
+          status: 'accessible',
+          collections: collectionNames,
+          allCollectionCounts: allCounts,
+          feedbackCollectionName: Feedback.collection.name
         }
       } catch (dbError) {
         diagnostics.database = {

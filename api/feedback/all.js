@@ -28,16 +28,22 @@ export default async function handler(req, res) {
       .sort({ createdAt: -1 }) // Newest first
       .limit(100) // Limit to prevent overwhelming response
 
-    // Return feedbacks with diagnostic info in development
-    if (process.env.NODE_ENV === 'development') {
+    // If debug query parameter is present, return diagnostic info
+    if (req.query.debug === 'true') {
+      const db = mongoose.connection.db
+      const collections = await db?.listCollections().toArray()
+      const collectionNames = collections?.map(c => c.name) || []
+      
       return res.status(200).json({
         feedbacks,
         count: feedbacks.length,
-        database: mongoose.connection.db?.databaseName || 'unknown',
-        connectionState: mongoose.connection.readyState
+        database: db?.databaseName || 'unknown',
+        collections: collectionNames,
+        feedbackCollection: Feedback.collection.name
       })
     }
 
+    // Return just the array for normal requests
     return res.status(200).json(feedbacks)
   } catch (error) {
     console.error('❌ Error fetching feedbacks:', error)
