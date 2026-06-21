@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        mono: ['"JetBrains Mono"', '"Share Tech Mono"', 'ui-monospace', 'monospace'],
+        sans: ['"JetBrains Mono"', '"Share Tech Mono"', 'ui-monospace', 'monospace'],
+      },
       colors: {
         medusa: {
           50: '#f0fdf4',
@@ -38,4 +42,3 @@ export default {
   },
   plugins: [],
 }
-

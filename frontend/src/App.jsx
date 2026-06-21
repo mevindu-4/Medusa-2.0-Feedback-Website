@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
+import CtfLayout from './components/CtfLayout'
 import Home from './pages/Home'
 import VerifyTeam from './pages/VerifyTeam'
 import FeedbackForm from './pages/FeedbackForm'
@@ -21,7 +22,9 @@ function AnimatedRoutes() {
 function App() {
   return (
     <Router>
-      <AnimatedRoutes />
+      <CtfLayout>
+        <AnimatedRoutes />
+      </CtfLayout>
     </Router>
   )
 }

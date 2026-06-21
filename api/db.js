@@ -34,15 +34,21 @@ if (!cached) {
 }
 
 async function connectDB() {
-  if (cached.conn) {
+  // Reuse live connection; reset cache if serverless instance went stale
+  if (cached.conn && mongoose.connection.readyState === 1) {
     return cached.conn
+  }
+
+  if (cached.conn && mongoose.connection.readyState !== 1) {
+    cached.conn = null
+    cached.promise = null
   }
 
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 10000,
-      dbName: DB_NAME, // Also set as option for redundancy
+      serverSelectionTimeoutMS: 15000,
+      dbName: DB_NAME,
     }
 
     cached.promise = mongoose.connect(connectionUri, opts).then((mongoose) => {
@@ -51,6 +57,7 @@ async function connectDB() {
     }).catch((error) => {
       console.error('❌ MongoDB connection error:', error)
       cached.promise = null
+      cached.conn = null
       throw error
     })
   }
@@ -59,6 +66,7 @@ async function connectDB() {
     cached.conn = await cached.promise
   } catch (e) {
     cached.promise = null
+    cached.conn = null
     console.error('❌ Failed to connect to MongoDB:', e.message)
     throw e
   }

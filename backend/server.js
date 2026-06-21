@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import teamRoutes from './routes/teamRoutes.js'
+import teamsRoutes from './routes/teamsRoutes.js'
 import feedbackRoutes from './routes/feedbackRoutes.js'
 
 dotenv.config()
@@ -29,6 +30,7 @@ mongoose
 
 // Routes
 app.use('/api/auth', teamRoutes)
+app.use('/api/teams', teamsRoutes)
 app.use('/api/feedback', feedbackRoutes)
 
 // Health check

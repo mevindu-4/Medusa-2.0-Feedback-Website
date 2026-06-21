@@ -1,0 +1,17 @@
+export const teams = [
+  { teamId: 'TEAM-001', teamName: '403_privileged' },
+  { teamId: 'TEAM-002', teamName: 'rootECU' },
+  { teamId: 'TEAM-003', teamName: 'SpiDeX' },
+  { teamId: 'TEAM-004', teamName: 'Alpha Squad' },
+  { teamId: 'TEAM-005', teamName: '0xLOL' },
+  { teamId: 'TEAM-006', teamName: 'Trojan Hex' },
+  { teamId: 'TEAM-007', teamName: 'Syscall' },
+  { teamId: 'TEAM-008', teamName: 'HexGang' },
+  { teamId: 'TEAM-009', teamName: 'ClipherCore' },
+  { teamId: 'TEAM-010', teamName: 'JG DiFF' },
+  { teamId: 'TEAM-011', teamName: 'Chronos' },
+  { teamId: 'TEAM-012', teamName: 'ByteHack' },
+  { teamId: 'TEAM-013', teamName: 'K3rnel_pan1c' },
+  { teamId: 'TEAM-014', teamName: 'HackStreetBoys' },
+  { teamId: 'TEAM-015', teamName: 'Insomniacs' },
+]

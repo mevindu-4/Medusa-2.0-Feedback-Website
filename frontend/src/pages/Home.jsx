@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import axios from 'axios'
+import MedusaLogo from '../components/MedusaLogo'
+import CtfButton from '../components/CtfButton'
 import FeedbackCard from '../components/FeedbackCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 
@@ -15,7 +17,6 @@ function Home() {
 
   useEffect(() => {
     fetchFeedbacks()
-    // Poll for new feedbacks every 5 seconds
     const interval = setInterval(fetchFeedbacks, 5000)
     return () => clearInterval(interval)
   }, [])
@@ -23,8 +24,7 @@ function Home() {
   const fetchFeedbacks = async () => {
     try {
       const response = await axios.get(`${API_URL}/feedback/all`)
-      // Sort by newest first (createdAt descending)
-      const sorted = response.data.sort((a, b) => 
+      const sorted = response.data.sort((a, b) =>
         new Date(b.createdAt) - new Date(a.createdAt)
       )
       setFeedbacks(sorted)
@@ -43,102 +43,83 @@ function Home() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="min-h-screen relative z-10"
+      className="min-h-screen relative z-10 pb-10"
     >
-      <div className="container mx-auto px-6 py-16 max-w-7xl relative z-10">
+      <div className="container mx-auto px-6 py-12 max-w-7xl relative z-10">
         {/* Header */}
         <motion.header
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16 relative"
+          className="text-center mb-12 relative"
         >
-          <motion.h1
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tighter cyber-text relative"
-          >
-            <span className="relative z-10">MEDUSA 2.0</span>
-          </motion.h1>
-          <motion.h2
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl md:text-2xl font-light text-medusa-400 mb-6 tracking-widest uppercase relative"
-          >
-            <span className="relative z-10">Feedback Wall</span>
-          </motion.h2>
-          <motion.p
+          <div className="logo-glow mb-6">
+            <MedusaLogo className="h-14 md:h-20 w-auto max-w-[90vw]" />
+          </div>
+
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-gray-400 text-lg font-light max-w-2xl mx-auto"
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 border border-medusa-500/30 bg-black/50 text-xs text-medusa-400 tracking-widest mb-4"
           >
-            Share your experience with us
-          </motion.p>
+            <span className="text-neon-green">[ LIVE ]</span>
+            <span className="text-gray-600">|</span>
+            <span>FEEDBACK_WALL</span>
+          </motion.div>
+
         </motion.header>
 
-        {/* CTA Button */}
+        {/* CTA */}
         <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
+          initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex justify-center mb-16"
+          transition={{ delay: 0.35 }}
+          className="flex justify-center mb-12"
         >
-          <motion.button
-            onClick={() => navigate('/verify')}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-transparent border-2 border-medusa-500 text-medusa-400 hover:bg-medusa-500 hover:text-white font-bold py-4 px-12 focus:outline-none tracking-widest uppercase text-sm relative overflow-hidden group"
-          >
-            <motion.span
-              className="relative z-10 flex items-center gap-2"
-              whileHover={{ x: 5 }}
-            >
-              <span>Give Feedback</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </motion.span>
-            <motion.div
-              className="absolute inset-0 bg-medusa-500"
-              initial={{ scaleX: 0 }}
-              whileHover={{ scaleX: 1 }}
-              transition={{ duration: 0.3 }}
-              style={{ originX: 0 }}
-            />
-            <motion.div
-              className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent"
-              initial={{ x: '-100%', skewX: -12 }}
-              whileHover={{ x: '100%' }}
-              transition={{ duration: 1 }}
-            />
-          </motion.button>
+          <CtfButton onClick={() => navigate('/verify')}>
+            <span>Execute: submit_review</span>
+            <span className="text-medusa-600">&gt;&gt;</span>
+          </CtfButton>
         </motion.div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex justify-center items-center py-20">
-            <LoadingSpinner />
+        {/* Stats bar */}
+        {!loading && !error && (
+          <div className="flex justify-center mb-8">
+            <div className="flex items-center gap-4 text-xs text-gray-600 border border-medusa-500/15 px-4 py-2 bg-black/40">
+              <span>
+                <span className="text-medusa-400">PACKETS:</span>{' '}
+                <span className="text-white">{feedbacks.length}</span>
+              </span>
+              <span className="text-medusa-500/30">|</span>
+              <span>
+                <span className="text-medusa-400">STATUS:</span>{' '}
+                <span className="text-neon-green">RECEIVING</span>
+              </span>
+            </div>
           </div>
         )}
 
-        {/* Error State */}
+        {loading && (
+          <div className="flex flex-col justify-center items-center py-20 gap-3">
+            <LoadingSpinner />
+            <p className="text-xs text-gray-600 tracking-widest">LOADING_PACKETS...</p>
+          </div>
+        )}
+
         {error && !loading && (
-          <div className="bg-red-950 border-l-4 border-red-500 text-red-400 px-6 py-4 mb-8 text-center max-w-2xl mx-auto">
+          <div className="ctf-error text-center max-w-2xl mx-auto mb-8">
             {error}
           </div>
         )}
 
-        {/* Feedbacks Grid */}
         {!loading && !error && (
           <>
             {feedbacks.length === 0 ? (
-              <div className="text-center py-24">
-                <div className="inline-block p-8 border-2 border-dashed border-medusa-500/30">
-                  <p className="text-gray-400 text-lg font-light">
-                    No feedbacks yet. Be the first to share your thoughts!
+              <div className="text-center py-20">
+                <div className="inline-block p-8 border border-dashed border-medusa-500/20 bg-black/30">
+                  <p className="text-gray-500 text-sm">
+                    {'> no packets intercepted yet. be the first to transmit.'}
                   </p>
                 </div>
               </div>
@@ -146,17 +127,16 @@ function Home() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
               >
                 {feedbacks.map((feedback, index) => (
                   <motion.div
                     key={feedback._id}
-                    initial={{ y: 20, opacity: 0 }}
+                    initial={{ y: 16, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
                   >
-                    <FeedbackCard feedback={feedback} />
+                    <FeedbackCard feedback={feedback} index={index} />
                   </motion.div>
                 ))}
               </motion.div>
@@ -169,4 +149,3 @@ function Home() {
 }
 
 export default Home
-
