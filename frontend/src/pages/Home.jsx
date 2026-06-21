@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import axios from 'axios'
 import MedusaLogo from '../components/MedusaLogo'
 import CtfButton from '../components/CtfButton'
+import QrCodePanel from '../components/QrCodePanel'
 import FeedbackCard from '../components/FeedbackCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 
@@ -70,13 +71,14 @@ function Home() {
 
         </motion.header>
 
-        {/* CTA */}
+        {/* QR + CTA */}
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.35 }}
-          className="flex justify-center mb-12"
+          className="flex flex-col items-center justify-center gap-6 mb-12"
         >
+          <QrCodePanel />
           <CtfButton onClick={() => navigate('/verify')}>
             <span>Execute: submit_review</span>
             <span className="text-medusa-600">&gt;&gt;</span>
